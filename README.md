@@ -201,10 +201,16 @@ The DVD Rental database is a legacy dataset from 2005 containing transactional r
 - Create **recommendation engine** based on cluster preferences
 - Build **automated re-engagement campaigns** triggered by Low → Medium transitions
 
+---
+
 ### Author
 
-Azzahra Puteri Kamilah
+**Azzahra Puteri Kamilah**
+- GitHub: [@azhrapttri](https://github.com/azhrapttri)
+- LinkedIn: [linkedin.com/in/azzahraputerikamilah](www.linkedin.com/in/azzahraputerikamilah)
 
-Advanced Database Course Project - Semester 5
+---
+
+> Built as an Advanced Database Course Project using the PostgreSQL DVD Rental sample database.
 
 ---
