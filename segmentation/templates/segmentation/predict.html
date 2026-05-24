@@ -1,210 +1,14 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Predict Activity Level</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #f5f0e8; color: #2c2416; }
-
-        .navbar { background: #2c2416; color: #f5f0e8; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #8b6914; }
-        .navbar span { font-family: 'Playfair Display', serif; font-size: 16px; letter-spacing: 0.5px; color: #d4a843; }
-        .navbar a { color: #c9b99a; text-decoration: none; margin-left: 24px; font-size: 13px; transition: color 0.2s; }
-        .navbar a:hover { color: #d4a843; }
-
-        .container { max-width: 680px; margin: 40px auto; padding: 0 24px 60px; }
-
-        .page-header { margin-bottom: 24px; }
-        .page-header h1 { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #2c2416; }
-        .page-header p { color: #6b5744; font-size: 14px; line-height: 1.7; }
-
-        /* ── Guidance Banner ── */
-        .guidance-banner {
-            background: linear-gradient(135deg, #eef7fd 0%, #e8f4f8 100%);
-            border: 1px solid #9bcfe0;
-            border-left: 4px solid #1e5f74;
-            border-radius: 6px;
-            padding: 16px 20px;
-            margin-bottom: 24px;
-        }
-        .guidance-banner .g-title {
-            font-size: 13px; font-weight: 700; color: #1e5f74;
-            display: flex; align-items: center; gap: 6px; margin-bottom: 10px;
-        }
-        .guidance-banner ul { list-style: none; padding: 0; }
-        .guidance-banner ul li {
-            font-size: 12px; color: #4a6e7e; padding: 4px 0;
-            display: flex; gap: 8px; align-items: flex-start; line-height: 1.5;
-        }
-        .guidance-banner ul li::before { content: "→"; color: #1e5f74; font-weight: 700; flex-shrink: 0; }
-
-        .form-box { background: #fffdf7; border-radius: 6px; padding: 32px; box-shadow: 0 2px 12px rgba(44,36,22,0.08); border: 1px solid #e8dcc8; }
-
-        .model-badge {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 600;
-            margin-bottom: 20px; letter-spacing: 0.5px; text-transform: uppercase;
-            background: #d4edf4; color: #1e5f74; border: 1px solid #1e5f74;
-        }
-
-        .form-group { margin-bottom: 16px; }
-        .form-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 24px; }
-        .form-column { display: flex; flex-direction: column; gap: 16px; }
-        label {
-            display: flex; align-items: center; gap: 4px;
-            font-size: 12px; font-weight: 700; color: #4a3828;
-            margin-bottom: 6px; letter-spacing: 0.5px; text-transform: uppercase;
-        }
-        .field-desc {
-            font-size: 11px; color: #8b7355; margin-bottom: 6px; line-height: 1.5;
-        }
-        .field-range {
-            display: inline-flex; align-items: center; gap: 4px;
-            font-size: 10px; color: #8b7355; background: #f5ece0;
-            border: 1px solid #e0cdb0; border-radius: 3px;
-            padding: 3px 8px; margin-bottom: 8px;
-        }
-        .field-range span { font-weight: 600; }
-
-        input[type="text"], input[type="number"] {
-            width: 100%; padding: 12px 14px; border: 1px solid #dcc6a6; border-radius: 4px;
-            font-size: 14px; outline: none; background: #faf6ef; color: #2c2416;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        input[type="text"]:focus, input[type="number"]:focus { border-color: #8b6914; background: #fffdf7; box-shadow: 0 0 0 3px rgba(139,105,20,0.1); }
-        input[type="text"]:disabled, input[type="number"]:disabled { background: #ece6d9; color: #8b7355; cursor: not-allowed; border-color: #dcc6a6; }
-        input[type="text"].input-error, input[type="number"].input-error { border-color: #8b2e2e !important; background: #fff5f5 !important; }
-        input[type="text"].input-ok, input[type="number"].input-ok { border-color: #2d6a4f !important; }
-        input[type="text"].input-auto-fill.input-error, input[type="number"].input-auto-fill.input-error { border-color: #8b2e2e !important; background: #fff5f5 !important; }
-
-        .input-row { display: flex; gap: 8px; align-items: flex-end; }
-        .input-row input { flex: 1; }
-        .btn-auto {
-            padding: 10px 14px; background: #2c2416; color: #d4a843; border: none;
-            border-radius: 4px; font-size: 11px; font-weight: 700; cursor: pointer;
-            white-space: nowrap; letter-spacing: 0.3px; transition: background 0.2s;
-            height: 40px; display: flex; align-items: center; gap: 4px;
-        }
-        .btn-auto:hover { background: #1a1510; }
-        .btn-auto:disabled { opacity: 0.45; cursor: not-allowed; }
-
-        /* Auto-tag badge */
-        .auto-tag {
-            display: inline-flex; align-items: center; gap: 4px;
-            font-size: 10px; color: #1e5f74; background: #cfe8f0;
-            border: 1px solid #a8d9e8; border-radius: 3px;
-            padding: 3px 8px; margin-bottom: 8px;
-        }
-        /* Auto-filled inputs get a subtle blue tint */
-        .input-auto-fill { background: #f0f7fa !important; border-color: #9bcfe0 !important; }
-        .input-auto-fill:focus { border-color: #1e5f74 !important; background: #fffdf7 !important; }
-
-        .error-msg {
-            color: #8b2e2e; font-size: 12px; margin-top: 5px;
-            display: none; align-items: center; gap: 4px; font-weight: 500;
-        }
-        .error-msg::before { content: "⚠"; }
-
-        /* ── Global alert (illogical data) ── */
-        .global-alert {
-            background: #fff0f0; border: 1px solid #d45c5c;
-            border-left: 4px solid #8b2e2e; border-radius: 6px;
-            padding: 14px 16px; margin-top: 16px; display: none;
-        }
-        .global-alert .ga-title { font-size: 13px; font-weight: 700; color: #6b1e1e; margin-bottom: 6px; }
-        .global-alert ul { list-style: none; padding: 0; }
-        .global-alert ul li { font-size: 12px; color: #7a2a2a; padding: 2px 0; display: flex; gap: 6px; }
-        .global-alert ul li::before { content: "✕"; color: #8b2e2e; font-weight: 700; }
-
-        .btn-predict {
-            width: 100%; padding: 13px; background: #1e5f74; color: #f5f0e8;
-            border: none; border-radius: 4px; font-size: 14px; font-weight: 700;
-            cursor: pointer; margin-top: 8px; letter-spacing: 0.5px;
-            transition: background 0.2s, transform 0.1s; display: flex;
-            align-items: center; justify-content: center; gap: 8px;
-        }
-        .btn-predict:hover { background: #164a5b; }
-        .btn-predict:active { transform: scale(0.99); }
-        .btn-predict.loading { opacity: 0.7; cursor: wait; }
-
-        /* ── Result ── */
-        .result { margin-top: 28px; padding: 24px; border-radius: 6px; display: none; border: 1px solid; animation: fadeUp 0.4s ease; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-        .result.High { background: #edf7f2; border-color: #2d6a4f; }
-        .result.Medium { background: #fdf6e3; border-color: #b5770d; }
-        .result.Low { background: #faf0f0; border-color: #8b2e2e; }
-
-        .result-top { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
-        .pred-badge { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; padding: 8px 22px; border-radius: 4px; letter-spacing: 1px; }
-        .result.High .pred-badge { background: #2d6a4f; color: #f5f0e8; }
-        .result.Medium .pred-badge { background: #b5770d; color: #f5f0e8; }
-        .result.Low .pred-badge { background: #8b2e2e; color: #f5f0e8; }
-
-        .pred-label { font-size: 13px; color: #6b5744; }
-        .pred-label strong { display: block; font-size: 14px; color: #2c2416; margin-bottom: 4px; }
-
-        .result-insight { background: rgba(255,253,247,0.85); border-radius: 4px; padding: 14px; margin-bottom: 14px; font-size: 13px; line-height: 1.7; color: #4a3828; border: 1px solid rgba(44,36,22,0.1); }
-        .result-insight .insight-title { font-weight: 700; margin-bottom: 6px; font-size: 13px; }
-        .result.High .insight-title { color: #1e4f3a; }
-        .result.Medium .insight-title { color: #7a4f0d; }
-        .result.Low .insight-title { color: #6b1e1e; }
-
-        /* Detail stats in result */
-        .result-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
-        .stat-cell { text-align: center; padding: 10px; border-radius: 4px; background: rgba(255,253,247,0.7); border: 1px solid rgba(44,36,22,0.1); }
-        .stat-cell .sv { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: #2c2416; }
-        .stat-cell .sk { font-size: 10px; color: #9c8672; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
-
-        /* Recommendation box */
-        .recommendation {
-            border-radius: 4px; padding: 12px 14px; margin-bottom: 14px;
-            font-size: 12px; line-height: 1.7; border: 1px dashed;
-        }
-        .result.High .recommendation { background: #e4f5ec; border-color: #2d6a4f; color: #1e4f3a; }
-        .result.Medium .recommendation { background: #fef3d1; border-color: #b5770d; color: #7a4f0d; }
-        .result.Low .recommendation { background: #fce8e8; border-color: #8b2e2e; color: #6b1e1e; }
-        .recommendation .rec-title { font-weight: 700; font-size: 12px; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
-        .recommendation ul { padding-left: 14px; }
-        .recommendation ul li { padding: 2px 0; }
-
-        .conf-title { font-size: 11px; font-weight: 600; color: #9c8672; margin-bottom: 8px; letter-spacing: 0.5px; text-transform: uppercase; }
-        .conf-bar { display: flex; align-items: center; gap: 8px; margin: 6px 0; font-size: 12px; }
-        .conf-bar .bar-label { width: 64px; text-align: right; font-weight: 600; color: #6b5744; }
-        .conf-bar .bar-track { flex: 1; background: #e8dcc8; border-radius: 2px; height: 8px; }
-        .conf-bar .bar-fill { height: 8px; border-radius: 2px; transition: width 0.6s ease; }
-        .conf-bar.High .bar-fill { background: #2d6a4f; }
-        .conf-bar.Medium .bar-fill { background: #b5770d; }
-        .conf-bar.Low .bar-fill { background: #8b2e2e; }
-        .conf-bar .bar-pct { width: 40px; font-weight: 600; color: #6b5744; }
-
-        /* Tooltip */
-        .tooltip-wrap { position: relative; display: inline-flex; align-items: center; margin-left: 2px; }
-        .tooltip-icon {
-            width: 14px; height: 14px; border-radius: 50%; background: #c9b99a;
-            color: #2c2416; font-size: 9px; font-weight: 700; display: flex;
-            align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;
-        }
-        .tooltip-box {
-            position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
-            background: #2c2416; color: #f5f0e8; font-size: 11px; padding: 8px 12px;
-            border-radius: 4px; width: 220px; line-height: 1.5; z-index: 100;
-            opacity: 0; pointer-events: none; transition: opacity 0.2s; font-weight: 400;
-            text-transform: none; letter-spacing: 0;
-        }
-        .tooltip-box::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: #2c2416; }
-        .tooltip-wrap:hover .tooltip-box { opacity: 1; }
-
-        .divider { border: none; border-top: 1px solid #e8dcc8; margin: 20px 0 0; }
-
-        /* Responsive: Stack columns on smaller screens */
-        @media (max-width: 768px) {
-            .form-columns { grid-template-columns: 1fr; gap: 16px; }
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/predict.css' %}">
 </head>
 <body>
+
 <nav class="navbar">
     <span>Customer Activity Segmentation System</span>
     <div>
@@ -215,6 +19,7 @@
 </nav>
 
 <div class="container">
+
     <div class="page-header">
         <h1>Predict Activity Level</h1>
     </div>
@@ -222,8 +27,10 @@
     <div class="form-box">
 
         <div class="form-columns">
+
             <!-- Left Column: Manual Inputs -->
             <div class="form-column">
+
                 <!-- Total Rental -->
                 <div class="form-group">
                     <label>
@@ -235,7 +42,8 @@
                     </label>
                     <div class="field-desc">All-time total rentals</div>
                     <div class="field-range"><span>1 – 500</span> · Whole number</div>
-                    <input type="text" id="total_rental" placeholder="e.g. 27" oninput="validateNumeric('total_rental'); autoCalcAll()">
+                    <input type="text" id="total_rental" placeholder="e.g. 27"
+                           oninput="validateNumeric('total_rental'); autoCalcAll()">
                     <div class="error-msg" id="err_total_rental">This field is required.</div>
                 </div>
 
@@ -250,13 +58,16 @@
                     </label>
                     <div class="field-desc">Customer tenure in months</div>
                     <div class="field-range"><span>1 – 60</span> · Whole number</div>
-                    <input type="text" id="active_months" placeholder="e.g. 3" oninput="validateNumeric('active_months'); autoCalcAll()">
+                    <input type="text" id="active_months" placeholder="e.g. 3"
+                           oninput="validateNumeric('active_months'); autoCalcAll()">
                     <div class="error-msg" id="err_active_months">This field is required.</div>
                 </div>
+
             </div>
 
             <!-- Right Column: Auto-Calculated Inputs -->
             <div class="form-column">
+
                 <!-- Rental Frequency (auto-calculated, read-only) -->
                 <div class="form-group">
                     <label>
@@ -275,7 +86,8 @@
                 <!-- Average Interval (auto-calculated, read-only) -->
                 <div class="form-group">
                     <label>
-                        Average Interval                        <span class="tooltip-wrap">
+                        Average Interval
+                        <span class="tooltip-wrap">
                             <span class="tooltip-icon">?</span>
                             <span class="tooltip-box">Auto-filled as (Active Months × 30) ÷ Total Rental.</span>
                         </span>
@@ -285,6 +97,7 @@
                     <input type="text" id="avg_interval" placeholder="auto" class="input-auto-fill" disabled>
                     <div class="error-msg" id="err_avg_interval">This field is required.</div>
                 </div>
+
             </div>
         </div>
 
@@ -300,7 +113,7 @@
 
     </div>
 
-    <!-- ── Result ── -->
+    <!-- Result Card -->
     <div class="result" id="result">
         <div class="result-top">
             <div class="pred-badge" id="pred-value"></div>
@@ -310,7 +123,7 @@
             </div>
         </div>
 
-        <!-- Input summary -->
+        <!-- Input summary stats -->
         <div class="result-stats" id="result-stats"></div>
 
         <!-- Insight -->
@@ -324,339 +137,10 @@
         <div class="conf-title">Distance-based Confidence Score</div>
         <div id="confidence"></div>
     </div>
+
 </div>
 
-<script>
-// ── Validation rules ──────────────────────────────────────────────────────────
-const RULES = {
-    total_rental:     { min: 1,   max: 500, label: 'Total Rental',     unit: '',       integer: true  },
-    active_months:    { min: 1,   max: 60,  label: 'Active Months',    unit: 'months', integer: true  },
-    rental_frequency: { min: 0.1, max: 50,  label: 'Rental Frequency', unit: '/month', integer: false },
-    avg_interval:     { min: 0.5, max: 365, label: 'Average Interval', unit: 'days',   integer: false },
-};
+<script src="{% static 'js/predict.js' %}"></script>
 
-// ── Logical cross-field consistency ───────────────────────────────────────────────
-// Always validates — does NOT depend on manuallySet flag.
-function getLogicErrors(total, months, freq, interval) {
-    const errs = [];
-
-    const expectedFreq     = total / months;        // what freq SHOULD be
-    const expectedInterval = (months * 30) / total; // what interval SHOULD be
-
-    // Rental Frequency must be within 3× of the expected value
-    if (freq > expectedFreq * 3) {
-        errs.push(
-            `Rental Frequency (${freq}/month) is too high for ${total} rentals ` +
-            `over ${months} months — expected ~${expectedFreq.toFixed(1)}/month.`
-        );
-    } else if (freq < expectedFreq / 3) {
-        errs.push(
-            `Rental Frequency (${freq}/month) is too low for ${total} rentals ` +
-            `over ${months} months — expected ~${expectedFreq.toFixed(1)}/month.`
-        );
-    }
-
-    // Average Interval must be within 3× of the expected value
-    if (interval > expectedInterval * 3) {
-        errs.push(
-            `Average Interval (${interval} days) is too long for ${total} rentals ` +
-            `over ${months} months — expected ~${expectedInterval.toFixed(1)} days.`
-        );
-    } else if (interval < expectedInterval / 3) {
-        errs.push(
-            `Average Interval (${interval} days) is too short for ${total} rentals ` +
-            `over ${months} months — expected ~${expectedInterval.toFixed(1)} days.`
-        );
-    }
-
-    // Absolute: monthly frequency can never exceed the all-time total
-    if (freq > total) {
-        errs.push(`Rental Frequency (${freq}/month) cannot exceed Total Rental (${total}).`);
-    }
-
-    return errs;
-}
-
-// ── Real-time validation for numeric input ────────────────────────────────────
-function validateNumeric(id) {
-    const inp = document.getElementById(id);
-    const err = document.getElementById('err_' + id);
-    const val = inp.value.trim();
-
-    // Allow empty value (will be caught by required validation later)
-    if (val === '') {
-        err.style.display = 'none';
-        inp.classList.remove('input-error');
-        return;
-    }
-
-    // Check if value contains any non-numeric characters (except . and - for decimals/negatives)
-    const numericPattern = /^-?\d+\.?\d*$/;
-    if (!numericPattern.test(val)) {
-        err.textContent = 'Only numbers allowed (e.g. 27)';
-        err.style.display = 'flex';
-        inp.classList.add('input-error');
-    } else {
-        err.style.display = 'none';
-        inp.classList.remove('input-error');
-    }
-}
-
-function clearError(id) {
-    const err = document.getElementById('err_' + id);
-    const inp = document.getElementById(id);
-    err.style.display = 'none';
-    inp.classList.remove('input-error');
-}
-
-function showGlobalAlert(msgs) {
-    const box  = document.getElementById('global-alert');
-    const list = document.getElementById('global-alert-list');
-    if (msgs.length === 0) { box.style.display = 'none'; list.innerHTML = ''; return; }
-    list.innerHTML = msgs.map(m => `<li>${m}</li>`).join('');
-    box.style.display = 'block';
-    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-// ── Auto-calculate Rental Frequency and Avg Interval from Total Rental + Active Months ──
-function autoCalcAll() {
-    const total  = parseFloat(document.getElementById('total_rental').value);
-    const months = parseFloat(document.getElementById('active_months').value);
-    const freqEl = document.getElementById('rental_frequency');
-    const intEl  = document.getElementById('avg_interval');
-
-    if (total > 0 && months > 0) {
-            freqEl.value = (total / months).toFixed(2);
-        intEl.value = ((months * 30) / total).toFixed(1);
-        clearError('rental_frequency');
-        clearError('avg_interval');
-    }
-}
-
-// ── Validate ──────────────────────────────────────────────────────────────────
-function validate() {
-    const fields = ['total_rental', 'active_months', 'rental_frequency', 'avg_interval'];
-    let valid = true;
-
-    fields.forEach(id => {
-        const input = document.getElementById(id);
-        const err   = document.getElementById('err_' + id);
-        const rule  = RULES[id];
-
-        // Auto-calculated fields: skip all validation, no error message
-        if (input.disabled) {
-            err.style.display = 'none';
-            input.classList.remove('input-error');
-            return;
-        }
-
-        // Manual input fields validation:
-
-        // Step 1: Check if field is empty
-        if (input.value === '') {
-            err.textContent = 'This field is required.';
-            err.style.display = 'flex';
-            input.classList.add('input-error');
-            valid = false;
-            return; // Skip further checks for this field
-        }
-
-        // Step 2: Check for invalid characters (letters, symbols)
-        const numericPattern = /^-?\d+\.?\d*$/;
-        if (!numericPattern.test(input.value.trim())) {
-            err.textContent = 'Only numbers allowed (e.g. 27).';
-            err.style.display = 'flex';
-            input.classList.add('input-error');
-            valid = false;
-            return; // Skip further checks for this field
-        }
-
-        // Step 3: Parse and validate range/format
-        const val = parseFloat(input.value);
-        if (isNaN(val)) {
-            err.textContent = 'This field is required.';
-            err.style.display = 'flex';
-            input.classList.add('input-error');
-            valid = false;
-        } else if (val < rule.min) {
-            err.textContent = `Minimum is ${rule.min}${rule.unit ? ' ' + rule.unit : ''}.`;
-            err.style.display = 'flex';
-            input.classList.add('input-error');
-            valid = false;
-        } else if (val > rule.max) {
-            err.textContent = `Maximum is ${rule.max}${rule.unit ? ' ' + rule.unit : ''}. Value ${val} seems unrealistic.`;
-            err.style.display = 'flex';
-            input.classList.add('input-error');
-            valid = false;
-        } else if (rule.integer && !Number.isInteger(val)) {
-            err.textContent = `${rule.label} must be a whole number (no decimals).`;
-            err.style.display = 'flex';
-            input.classList.add('input-error');
-            valid = false;
-        } else {
-            err.style.display = 'none';
-            input.classList.remove('input-error');
-        }
-    });
-
-    return valid;
-}
-
-// ── Insights & Recommendations ────────────────────────────────────────────────
-const insights = {
-    High: {
-        title: "Cluster: HIGH Activity",
-        text: "K-Means placed this customer in the High cluster based on high rental volume, high frequency, and short intervals between rentals. Purely data-driven, no manual rules applied.",
-    },
-    Medium: {
-        title: "Cluster: MEDIUM Activity",
-        text: "K-Means placed this customer in the Medium cluster. They show a consistent but moderate rental pattern, distinct from both High and Low clusters.",
-    },
-    Low: {
-        title: "Cluster: LOW Activity",
-        text: "K-Means placed this customer in the Low cluster due to infrequent rentals and long gaps between transactions. Re-engagement may be needed.",
-    }
-};
-
-const recommendations = {
-    High: {
-        title: "Recommendation: Retain & Reward",
-        items: [
-            "Offer a loyalty program or exclusive discounts to maintain engagement.",
-            "Provide early access to new releases or premium content.",
-            "Use this segment as a benchmark for service quality.",
-        ]
-    },
-    Medium: {
-        title: "Recommendation: Push Toward High",
-        items: [
-            "Send personalized film recommendations to boost rental frequency.",
-            "Offer a 'rent X, get one free' promo to encourage more transactions.",
-            "Monitor trends, intervene quickly if frequency declines.",
-        ]
-    },
-    Low: {
-        title: "Recommendation: Re-engagement Campaign",
-        items: [
-            "Send a limited-time discount or promo via email/notification.",
-            "Offer a free trial on new titles to reignite interest.",
-            "Investigate churn reasons. Price, content, or service issues?",
-        ]
-    }
-};
-
-// ── Main predict function ─────────────────────────────────────────────────────
-async function predictActivity() {
-    showGlobalAlert([]);
-    document.getElementById('result').style.display = 'none';
-
-    if (!validate()) return;
-
-    const total  = parseFloat(document.getElementById('total_rental').value);
-    const months = parseFloat(document.getElementById('active_months').value);
-    const freq   = parseFloat(document.getElementById('rental_frequency').value);
-    const intv   = parseFloat(document.getElementById('avg_interval').value);
-
-    // Cross-field logic check (catches bad manual overrides)
-    const logicErrors = getLogicErrors(total, months, freq, intv);
-    if (logicErrors.length > 0) {
-        showGlobalAlert(logicErrors);
-        return;
-    }
-
-    const btn = document.getElementById('btn-predict');
-    btn.classList.add('loading');
-    btn.textContent = 'Processing...';
-
-    const data = { total_rental: total, rental_frequency: freq, avg_interval: intv };
-
-    try {
-        const response = await fetch('/api/kmeans-predict/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-
-        const result     = await response.json();
-
-        if (result.error) {
-            showGlobalAlert([`Server error: ${result.error}`]);
-            return;
-        }
-
-        const prediction = result.prediction;
-        const confidence = result.confidence;
-
-        // ── Render Result ──
-        const resultDiv = document.getElementById('result');
-        resultDiv.className = `result ${prediction}`;
-        resultDiv.style.display = 'block';
-        document.getElementById('pred-value').textContent = prediction.toUpperCase();
-
-        // Input summary stats
-        document.getElementById('result-stats').innerHTML = `
-            <div class="stat-cell">
-                <div class="sv">${total}</div>
-                <div class="sk">Total Rental</div>
-            </div>
-            <div class="stat-cell">
-                <div class="sv">${months}</div>
-                <div class="sk">Active Months</div>
-            </div>
-            <div class="stat-cell">
-                <div class="sv">${freq.toFixed(1)}</div>
-                <div class="sk">Freq / Month</div>
-            </div>
-            <div class="stat-cell">
-                <div class="sv">${intv.toFixed(1)}</div>
-                <div class="sk">Avg Interval (days)</div>
-            </div>
-        `;
-
-        // Insight
-        const ins = insights[prediction];
-        document.getElementById('result-insight').innerHTML = `
-            <div class="insight-title">${ins.title}</div>
-            ${ins.text}
-        `;
-
-        // Recommendation
-        const rec = recommendations[prediction];
-        document.getElementById('recommendation').innerHTML = `
-            <div class="rec-title">${rec.title}</div>
-            <ul>${rec.items.map(i => `<li>${i}</li>`).join('')}</ul>
-        `;
-
-        // Confidence bars (animate width after brief delay)
-        let confHtml = '';
-        for (const [cls, pct] of Object.entries(confidence)) {
-            confHtml += `
-                <div class="conf-bar ${cls}">
-                    <span class="bar-label">${cls}</span>
-                    <div class="bar-track">
-                        <div class="bar-fill" style="width:0%" data-pct="${pct}"></div>
-                    </div>
-                    <span class="bar-pct">${pct}%</span>
-                </div>`;
-        }
-        document.getElementById('confidence').innerHTML = confHtml;
-
-        // Animate bars
-        setTimeout(() => {
-            document.querySelectorAll('.bar-fill').forEach(el => {
-                el.style.width = el.dataset.pct + '%';
-            });
-        }, 80);
-
-        resultDiv.scrollIntoView({ behavior: 'smooth' });
-
-    } catch (err) {
-        showGlobalAlert([`Failed to connect to the server: ${err.message}. Make sure the Django server is running.`]);
-    } finally {
-        btn.classList.remove('loading');
-        btn.innerHTML = 'Predict Activity Level';
-    }
-}
-</script>
 </body>
 </html>
