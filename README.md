@@ -201,31 +201,6 @@ The DVD Rental database is a legacy dataset from 2005 containing transactional r
 - Create **recommendation engine** based on cluster preferences
 - Build **automated re-engagement campaigns** triggered by Low → Medium transitions
 
-### Project Structure
-customer-segmentation/
-
-├── config/                 # Django project settings
-
-├── segmentation/           # Main Django app
-
-│   ├── management/commands # ETL and training scripts
-
-│   ├── templates/          # HTML templates
-
-│   ├── models.py           # OLAP, ModelInfo models
-
-│   ├── views.py            # API endpoints and dashboard views
-
-│   └── urls.py             # URL routing
-
-├── ml_models/              # Trained model files (.pkl)
-
-├── requirements.txt        # Python dependencies
-
-├── manage.py               # Django CLI
-
-└── README.md               # This file
-
 ### Author
 
 Azzahra Puteri Kamilah
